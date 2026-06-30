@@ -1,18 +1,20 @@
 # 고가용성 그룹 구성 실습
 
 기존 AZ1에 구성한 로드밸런서의 안정성을 향상시키기 위하여 AZ2에 웹 서버, 로드밸런서를 구성하고, 고가용성 그룹을 통해 로드 밸런서를 이중화를 구성하는 실습입니다.
-    
+
 ```mermaid
 graph LR
     시작(시작) --> VM생성(다른 AZ에 Web VM 생성)
     VM생성--> LB생성(다른 AZ에 로드 밸런서 생성)
     LB생성--> HA구성(고가용성 그룹 구성)
     HA구성 --> 종료
+    
     %% 강조
     class VM생성, LB생성,HA구성 emphasized;
     
     %% 클래스 스타일
     classDef emphasized fill:#f9f,stroke:#333,stroke-width:4px;
+    
 ```
 
 ## 1. 다른 AZ에 Web VM 생성
