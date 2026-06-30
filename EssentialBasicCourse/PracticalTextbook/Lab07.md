@@ -7,7 +7,7 @@ graph LR
     시작(시작) --> VM생성(다른 AZ에 Web VM 생성)
     VM생성--> LB생성(다른 AZ에 로드 밸런서 생성)
     LB생성--> HA구성(고가용성 그룹 구성)
-    HA구성 --> 종료
+    HA구성 --> 종료(실습 종료)
     
     %% 강조
     class VM생성, LB생성,HA구성 emphasized;
