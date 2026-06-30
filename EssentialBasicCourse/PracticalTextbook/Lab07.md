@@ -15,7 +15,7 @@ graph LR
     classDef emphasized fill:#f9f,stroke:#333,stroke-width:4px;
 ```
 
-## 1. VPC 안 다른 AZ 생성하기
+## 1. 다른 AZ에 Web VM 생성
 
 
 1. 카카오 클라우드 콘솔 > 전체 서비스 > VPC 접속
@@ -27,7 +27,7 @@ graph LR
      - IPv4 CIDR 블록: `172.30.32.0/20`
 4. 만들기 클릭
 
-## 2. VPC 안 다른 AZ에 VM생성하기
+## 2. 다른 AZ에 로드 밸런서 생성
 
 
 1. 카카오 클라우드 콘솔 > 전체 서비스 > Virtual Machine > Instance
@@ -68,7 +68,7 @@ graph LR
 11. 브라우저창에 입력
 12. apache 웹서버 Test페이지가 나오는 것을 확인
 
-## 3. DNS 서비스 설정
+## 3. 고가용성 그룹 구성
 
 
 1. 카카오 클라우드 콘솔 > 전체 서비스 > DNS 접속
@@ -88,20 +88,4 @@ graph LR
      - 도메인 구입처의 도메인 설정창에서 네임서버를 변경
      - 본 실습에서는 ‘가비아’ 라는 도메인 제공 서비스를 이용하였음
 
-## 4. DNS 서비스 동작 확인
-
-
-1. 브라우저에 `kakaocloud-edu.com` (연결한 도메인)을 입력
-
-### 3.1 kr-central-2-a에 있는 Load Balancer에 연결된 경우
-
-
-2. 호스트명 확인하기
-     - Load Balancer는 webserver1과 webserver2에 연결되어 있기 때문에 새로고침 시 호스트명이 연결된 VM의 IP로 바뀌는 것을 볼 수 있음
-     - 새로고침 시 바로 바뀌어서 접속되지않고, 일정시간후 새로고침을 진행해야함
-
-### 3.2 kr-central-2-b에 있는 vm_5에 연결된 경우
-
-
-2. vm_5에 설치된 Apache 웹서버 테스트 페이지가 나오는 것을 확인
 
