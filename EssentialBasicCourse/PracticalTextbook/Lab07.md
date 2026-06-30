@@ -19,14 +19,36 @@ graph LR
 ## 1. 다른 AZ에 Web VM 생성
 
 
-1. 카카오 클라우드 콘솔 > 전체 서비스 > VPC 접속
-2. 좌측 Subnet 클릭
-3. Subnet 만들기 클릭
-     - VPC 선택 : `vpc_1`
-     - Subnet 이름 : `main-b`
-     - Availability Zone: `kr-central-2-b`
-     - IPv4 CIDR 블록: `172.30.32.0/20`
-4. 만들기 클릭
+1. 모든 서비스 > Compute > Beyond Compute Service > 인스턴스 클릭
+2. [인스턴스 생성] 버튼 클릭
+3. 인스턴스 정보 입력
+     - 이름 : web_server_3
+     - 개수 : 1
+     - 이미지 : Ubuntu 20.04
+     - 인스턴스 유형 : m2a.xlarge
+     - 볼륨 : 30 GB
+     - 키페어 :  keypair
+     - 서브넷 : vpc_1_public_sn2
+     - 네트워크 인터페이스 구분 : 새 인터페이스
+     - IP 할당 방식  : 자동 할당
+     - 인스턴스 유형 : m2a.xlarge
+     - 보안 그룹 : webserver
+4.고급 설정을 클릭한 후, ‘사용자 스크립트’에 아래 스크립트를 복사/붙여넣기 후 [생성] 버튼 클릭
+
+ ```bash
+     #!/bin/bash
+     sudo apt-get update
+     sudo apt-get -y remove mariadb-server mariadb-client
+     sudo apt-get -y install apache2 php mysql-client php-mysql wget
+     sudo systemctl enable apache2
+     cd /var/www/html
+     sudo rm -f index.html
+     wget https://github.com/kakaocloud-edu/tutorial/raw/main/EssentialBasicCourse/src/kakao.tar.gz -O kakao.tar.gz
+     tar -xvf kakao.tar.gz
+     sudo mv kakao/{index.php,get_user_list.php,add_user.php} /var/www/html/
+     sudo systemctl restart apache2
+
+     ```
 
 ## 2. 다른 AZ에 로드 밸런서 생성
 
