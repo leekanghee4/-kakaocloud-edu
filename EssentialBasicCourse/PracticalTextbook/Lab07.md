@@ -10,7 +10,7 @@ graph LR
     HA구성 --> 종료(실습 종료)
     
     %% 강조
-    class 버킷생성,파일업로드,파일접근,권한설정,LifeCycle설정,버킷삭제 emphasized;
+    class VM생성,파일업로드,파일접근,권한설정,LifeCycle설정,버킷삭제 emphasized;
     %% 클래스 스타일
     classDef emphasized fill:#f9f,stroke:#333,stroke-width:4px;
     
