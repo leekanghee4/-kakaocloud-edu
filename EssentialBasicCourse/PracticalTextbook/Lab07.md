@@ -35,7 +35,7 @@ graph LR
      - 보안 그룹 : webserver
 4.고급 설정을 클릭한 후, ‘사용자 스크립트’에 아래 스크립트를 복사/붙여넣기 후 [생성] 버튼 클릭
 
- ```bash
+     ```bash
      #!/bin/bash
      sudo apt-get update
      sudo apt-get -y remove mariadb-server mariadb-client
