@@ -33,6 +33,7 @@ graph LR
      - IP 할당 방식  : 자동 할당
      - 인스턴스 유형 : m2a.xlarge
      - 보안 그룹 : webserver
+     - CPU 멀티스레딩: 사용
 
 4.고급 설정을 클릭한 후, ‘사용자 스크립트’에 아래 스크립트를 복사/붙여넣기 후 [생성] 버튼 클릭
 
@@ -50,66 +51,56 @@ graph LR
      sudo systemctl restart apache2
 
      ```
+5. 인스턴스가 Active 상태로 변경되면, 더보기 및 ‘퍼블릭 IP 연결’ 클릭
+6. 퍼블릭 IP의 생성 자동 할당을 선택 후 [연결] 버튼 클릭
+7. web_server_3의 퍼블릭 IP릍 통해 접근한 (41P 참조) 웹 브라우저 화면으로 이동
+8. 호스트 입력 칸에 53p에서 복사해 놓은 ‘엔드포인트 URL’ 붙여 넣고 [유저 이름 가져오기] 버튼을 클릭하여 DB 연결을 확인
 
 ## 2. 다른 AZ에 로드 밸런서 생성
 
 
-1. 카카오 클라우드 콘솔 > 전체 서비스 > Virtual Machine > Instance
-2. 인스턴스 만들기 클릭
-     - 이름 : `vm_5`
-     - Image : `Ubuntu 20.04`
-     - Instance 타입 : `m2a.large`
-     - Volume : `30 GB`
-     - Key Pair : `keypair`
-     - VPC : `vpc_1`
-3. 새 Security Group 생성 클릭
-     - Security Group 이름 : `vm_5`
-     - Inbound
-          - 프로토콜: TCP, 패킷 출발지: `0.0.0.0/0`, 포트번호: `22`
-          - 프로토콜: TCP, 패킷 출발지: `0.0.0.0/0`, 포트번호: `80`
-     - Outbound
-          - 프로토콜: `ALL`
-          - 패킷 목적지: `0.0.0.0/0`
-4. 새 인터페이스 클릭
-     - Subnet : `main-b`(kr-cenrtral2-b의 Public 서브넷)
-     - IP 할당 방식: `자동`
-5. 고급설정 버튼 클릭
-     - 사용자 스크립트에 아래 내용 붙여넣기
-     #### **lab7-2-4**
-     ```bash
-     #!/bin/bash
-     sudo apt update -y
-     sudo apt install -y apache2
-     sudo systemctl start apache2
-     sudo systemctl enable apache2
-     ```
-6. 만들기 버튼 클릭
-7. 카카오 클라우드 콘솔 > 전체 서비스 > Virtual Machine > Instance
-8. 생성된 vm_5 인스턴스의 우측 메뉴바 클릭 > Public IP 연결 클릭
-     - `새로운 Public IP를 자동으로 할당` 선택
-9. 확인 버튼 클릭
-10. vm_5의 Public IP 복사
-11. 브라우저창에 입력
-12. apache 웹서버 Test페이지가 나오는 것을 확인
+1. ‘모든 서비스’ > Networking  > Load Balancing > 로드 밸런서 클릭
+2. [로드 밸런서 생성] 버튼 클릭
+3. ‘Application Load Balancer’ 설정 후 [생성] 버튼 클릭
+4. Load Balancing > 대상 그룹 클릭
+5. [대상 그룹 생성] 버튼 클릭
+6. ‘1단계 대상 그룹 구성’ 정보 입력
+     - 로드 밸런서 : App_LB_B
+     - 리스너 : HTTP : 80
+     - 대상 그룹 이름 : App_Target_B
+     - 프로토콜 : HTTP
+7. ‘1단계 대상 그룹 구성’ 정보 입력 후 [다음] 버튼 클릭
+     - 알고리즘 : 라운드 로빈
+     - 고정세션 : 미사용
+     - 상태 확인 : 사용
+     - 상태 확인 프로토콜 : HTTP
+     - 나머지는 기본 값
+8. ‘대상 추가(선택)’ 정보 선택 후, 대상 2개 선택 후, [다음] 버튼 클릭
+     - 대상 : web_server_3
+     - 트래픽 포트 : 80
+     - [선택한 대상 추가] 버튼 클릭
+     - [다음 버튼 클릭
+9. ‘고급설정(선택)’에서 다음 버튼 클릭
+10.검토 화면에서 [생성] 버튼 클릭
+11. 로드 밸랜서에 퍼블릭 IP를 연결
+     - 더보기를 클릭
+     - 새로운 퍼블릭 IP 자동 생성 및 연결 선택
+     - [연결] 버튼 클릭
+12. App_LB_B의 퍼블릭 IP로 정상 접근 확인
 
 ## 3. 고가용성 그룹 구성
 
 
-1. 카카오 클라우드 콘솔 > 전체 서비스 > DNS 접속
-2. DNS Zone 만들기 버튼 클릭
-     - DNS Zone 이름 : `kakaocloud-edu.com`
-3. 만들기 버튼 클릭
-4. 생성된 `kakaocloud-edu.com` DNS 클릭
-5. 레코드 추가 버튼 클릭
-     - 레코드 타입 : `A`
-     - TTL : `60`
-     - 값 : `{연결하려는 VM의 Public IP}`
-     - **Note**: "{연결하려는 VM의 Public IP}" 부분을 실제 IP 주소로 교체하세요.
-     _**note**: 본 실습에서는 kr-central-2-a에 위치한 Load Balancer와  kr-central-2-b에 위치한 vm_5를 연결함
-6. 추가 버튼 클릭
-7. 추가 설정
-     - 사용 도메인의 네임서버를 카카오클라우드의 네임서버로 바꿔주어야함
-     - 도메인 구입처의 도메인 설정창에서 네임서버를 변경
-     - 본 실습에서는 ‘가비아’ 라는 도메인 제공 서비스를 이용하였음
+1. Load Balancing > 고가용성 그룹 클릭
+2. [고가용성 그룹 생성] 버튼을 클릭
+3. 고가용성 그룹  정보 등록
+     - Application Load Balancer 선택
+     - 체계 : 인터넷 경계
+4. 고가용성 그룹  정보 등록(계속) 후 [생성] 버튼 클릭
+     -고가용성 그룹 이름 : App_HA
+     - 서브넷 / LB 노드 : vpc_1_public_sn1 /  App_LB_A, vpc_1_public_sn2 / App_LB_B
+     - [생성] 버튼 클릭
+5. App_HA 고가용성 그룹의 DNS 이름을 복사한 후, 웹 브라우저에서 테스트
+
 
 
