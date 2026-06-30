@@ -15,7 +15,6 @@ graph LR
     classDef emphasized fill:#f9f,stroke:#333,stroke-width:4px;
 ```
 
-
 ## 1. VPC 안 다른 AZ 생성하기
 
 
