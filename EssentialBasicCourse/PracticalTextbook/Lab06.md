@@ -1,7 +1,8 @@
-# 웹서버 이중화 및 LB 구성 실습
+# 웹서버 이중화 및 LB, DNS 구성 실습
 
-Public 서브넷에 Web서버 VM을 하나 더 생성합니다. 만든 Web서버와 DB간의 연결이 되는지 확인합니다.
- Load Balancer를 생성하고 2개의 Web 서버 VM과 연결합니다. Load Balancer가 트래픽을 잘 분배하는지 볼 수 있는 실습입니다.
+Public 서브넷에 Web서버 VM을 하나 더 생성합니다. 만든 Web서버와 DB간의 연결이 되는지 확인해봅니다.
+로드 밸런서를 생성하고 2개의 Web 서버 VM과 연결합니다. 로드 밸런서가 트래픽을 잘 분배하는지 볼 수 있는 실습을 진행합니다.
+추가로 DNS 설정을 추가합니다.
 ```mermaid
 graph LR
     시작(시작) --> Web2VM생성(Web2 VM 인스턴스 생성)
@@ -9,10 +10,11 @@ graph LR
     Web2DB연결 --> LB생성(Load Balancer 생성)
     LB생성 --> 타겟그룹설정(Target Group 설정)
     타겟그룹설정 --> 웹접속및밸런싱확인(웹 접속 및 밸런싱 여부 확인)
-    웹접속및밸런싱확인 --> 종료(종료)
+    웹접속및밸런싱확인 --> DNS설정(DNS 서비스 설정)
+    DNS설정 --> 종료(종료)
 
     %% 강조
-    class Web2VM생성,Web2DB연결,LB생성,타겟그룹설정,웹접속및밸런싱확인 emphasized;
+    class Web2VM생성,Web2DB연결,LB생성,타겟그룹설정,웹접속및밸런싱확인,DNS설정 emphasized;
     
     %% 클래스 스타일
     classDef emphasized fill:#f9f,stroke:#333,stroke-width:4px;
@@ -84,3 +86,16 @@ graph LR
 2. App_LB의 Public IP 주소 복사
 3. 브라우저 주소창에 복사한 IP 주소 입력
      - 몇 분후 새로고침 시 호스트명이 바뀌는 것을 확인합니다.
+
+## 5. DNS 서비스 설정
+
+
+1. 모든 서비스 > Networking > DNS > DNS 영역
+2. [DNS 영역] 생성 클릭
+3. DNS 영역 정보 입력 및 [생성] 버튼 클릭
+4. DNS 영역 리스트 중 방금 생성한 `kakaocloud-edu.com` 클릭
+5. DNS [레코드 생성] 버튼 클릭
+6. 레코드 정보 등록 후 [생성] 버튼 클릭
+7. 연결한 도메인을 브라우저 창에 입력
+8. 서비스 동작 확인
+    - 몇 분후 새로고침 시 호스트명이 바뀌는 것을 확인합니다.
